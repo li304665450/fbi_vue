@@ -104,12 +104,30 @@ export const constantRouterMap = [
 ]
 
 export default new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
 
 export const asyncRouterMap = [
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/index',
+    alwaysShow: true,
+    meta: {
+      title: 'system',
+      icon: 'example'
+    },
+    children: [
+      {
+        path: 'user',
+        component: () => import('@/views/system/user'),
+        name: 'userList',
+        meta: { title: 'userList' }
+      }
+    ]
+  },
   {
     path: '/permission',
     component: Layout,

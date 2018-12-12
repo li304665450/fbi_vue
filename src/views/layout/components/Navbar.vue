@@ -125,7 +125,7 @@ export default {
       vertical-align: top;
     }
     .theme-switch {
-      vertical-align: 15px;
+      vertical-align: 18px;
     }
     .avatar-container {
       height: 50px;

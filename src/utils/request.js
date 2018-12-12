@@ -28,7 +28,7 @@ service.interceptors.request.use(
 
 // response interceptor
 service.interceptors.response.use(
-  // 我自己的错误处理方式，cook栏提示即可
+  // 自己的错误处理方式，cook栏提示即可
   response => {
     const res = response.data
     if (res.status !== 1) {

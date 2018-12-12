@@ -29,6 +29,7 @@ export default {
     lineChart: '折线图',
     mixChart: '混合图表',
     example: '综合实例',
+    system: '系统设置',
     nested: '路由嵌套',
     menu1: '菜单1',
     'menu1-1': '菜单1-1',
@@ -62,7 +63,8 @@ export default {
     theme: '换肤',
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
-    externalLink: '外链'
+    externalLink: '外链',
+    userList: '用户列表'
   },
   navbar: {
     logOut: '退出登录',
@@ -126,7 +128,9 @@ export default {
     draft: '草稿',
     delete: '删除',
     cancel: '取 消',
-    confirm: '确 定'
+    confirm: '确 定',
+    group: '分组',
+    realname: '姓名'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

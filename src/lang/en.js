@@ -62,7 +62,8 @@ export default {
     theme: 'Theme',
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
-    externalLink: 'External Link'
+    externalLink: 'External Link',
+    userList: 'User List'
   },
   navbar: {
     logOut: 'Log Out',
@@ -126,7 +127,9 @@ export default {
     draft: 'Draft',
     delete: 'Delete',
     cancel: 'Cancel',
-    confirm: 'Confirm'
+    confirm: 'Confirm',
+    group: 'group',
+    realname: 'realname'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
