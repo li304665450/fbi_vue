@@ -29,6 +29,7 @@ export default {
     lineChart: 'Line Chart',
     mixChart: 'Mix Chart',
     example: 'Example',
+    system: 'System',
     nested: 'Nested Routes',
     menu1: 'Menu 1',
     'menu1-1': 'Menu 1-1',
@@ -63,7 +64,8 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
     externalLink: 'External Link',
-    userList: 'User List'
+    userList: 'User List',
+    userGroup: 'User Group'
   },
   navbar: {
     logOut: 'Log Out',
@@ -126,10 +128,11 @@ export default {
     publish: 'Publish',
     draft: 'Draft',
     delete: 'Delete',
+    open: 'Open',
     cancel: 'Cancel',
     confirm: 'Confirm',
-    group: 'group',
-    realname: 'realname'
+    group: 'Group',
+    realname: 'Realname'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',

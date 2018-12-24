@@ -64,7 +64,8 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
     externalLink: '外链',
-    userList: '用户列表'
+    userList: '用户列表',
+    userGroup: '权限组管理'
   },
   navbar: {
     logOut: '退出登录',
@@ -127,9 +128,10 @@ export default {
     publish: '发布',
     draft: '草稿',
     delete: '删除',
+    open: '启用',
     cancel: '取 消',
     confirm: '确 定',
-    group: '分组',
+    group: '权限组',
     realname: '姓名'
   },
   errorLog: {
