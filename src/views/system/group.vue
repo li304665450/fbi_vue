@@ -133,7 +133,7 @@
 </template>
 
 <script>
-import groupApi from '@/api/system/group'
+import groupApi from '@/api/system/userGroup'
 import gameApi from '@/api/system/game'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'

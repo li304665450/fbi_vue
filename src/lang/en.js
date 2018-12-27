@@ -65,7 +65,8 @@ export default {
     i18n: 'I18n',
     externalLink: 'External Link',
     userList: 'User List',
-    userGroup: 'User Group'
+    userGroup: 'User Group',
+    gameList: 'Game List'
   },
   navbar: {
     logOut: 'Log Out',
@@ -132,7 +133,10 @@ export default {
     cancel: 'Cancel',
     confirm: 'Confirm',
     group: 'Group',
-    realname: 'Realname'
+    realname: 'RealName',
+    name: 'Name',
+    cloud: 'Cloud',
+    code: 'Code'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',

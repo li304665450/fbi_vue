@@ -65,7 +65,8 @@ export default {
     i18n: '国际化',
     externalLink: '外链',
     userList: '用户列表',
-    userGroup: '权限组管理'
+    userGroup: '权限组管理',
+    gameList: '游戏列表'
   },
   navbar: {
     logOut: '退出登录',
@@ -132,7 +133,10 @@ export default {
     cancel: '取 消',
     confirm: '确 定',
     group: '权限组',
-    realname: '姓名'
+    realname: '姓名',
+    name: '名称',
+    cloud: '业务群',
+    code: '编码'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

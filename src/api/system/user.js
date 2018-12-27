@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const groupUrl = '/system/user/'
+const groupUrl = '/system/user'
 
 export default {
   fetchList: (query) => {
@@ -12,28 +12,21 @@ export default {
   },
   fetchArticle: (id) => {
     return request({
-      url: '/article/detail',
+      url: groupUrl,
       method: 'get',
       params: { id }
     })
   },
-  fetchPv: (pv) => {
+  create: (data) => {
     return request({
-      url: '/article/pv',
-      method: 'get',
-      params: { pv }
-    })
-  },
-  createArticle: (data) => {
-    return request({
-      url: '/article/create',
+      url: groupUrl + '/create',
       method: 'post',
       data
     })
   },
-  updateArticle: (data) => {
+  update: (data) => {
     return request({
-      url: '/article/update',
+      url: groupUrl,
       method: 'post',
       data
     })

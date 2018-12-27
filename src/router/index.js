@@ -110,30 +110,6 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  // {
-  //   path: '/data',
-  //   component: Layout,
-  //   redirect: '/system/index',
-  //   alwaysShow: true,
-  //   meta: {
-  //     title: 'system',
-  //     icon: 'system'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'user',
-  //       component: () => import('@/views/system/user'),
-  //       name: 'userList',
-  //       meta: { title: 'userList' }
-  //     },
-  //     {
-  //       path: 'group',
-  //       component: () => import('@/views/system/group'),
-  //       name: 'userGroup',
-  //       meta: { title: 'userGroup' }
-  //     }
-  //   ]
-  // },
   {
     path: '/system',
     component: Layout,
@@ -155,6 +131,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/system/group'),
         name: 'userGroup',
         meta: { title: 'userGroup' }
+      },
+      {
+        path: 'game',
+        component: () => import('@/views/system/game'),
+        name: 'game',
+        meta: { title: 'gameList' }
       }
     ]
   },

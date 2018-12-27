@@ -1,21 +1,14 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
 
-      <el-input :placeholder="$t('table.title')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
-      <el-select v-model="listQuery.importance" :placeholder="$t('table.importance')" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item"/>
-      </el-select>
-      <el-select v-model="listQuery.type" :placeholder="$t('table.type')" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key"/>
-      </el-select>
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
+    <div class="filter-container">
+      <el-input :placeholder="$t('table.realname')" v-model="listQuery.where.realName" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+      <el-select v-model="listQuery.where.status" :placeholder="$t('table.status')" clearable style="width: 90px" class="filter-item">
+        <el-option v-for="(item,key) in statusOptions" :key="key" :label="item" :value="key"/>
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('table.add') }}</el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
-      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">{{ $t('table.reviewer') }}</el-checkbox>
     </div>
 
     <el-table
@@ -25,65 +18,68 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
-      @sort-change="sortChange">
+      style="width: 100%;">
 
-      <el-table-column :label="$t('table.id')" prop="id" sortable="custom" align="center" width="85">
+      <el-table-column :label="$t('table.id')" prop="id" sortable align="center" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('login.username')" align="center" width="150">
+      <el-table-column :label="$t('login.username')" align="center" width="170">
         <template slot-scope="scope">
           <span>{{ scope.row.userName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('table.realname')" align="center" width="150">
+      <el-table-column :label="$t('table.realname')" align="center" width="170">
         <template slot-scope="scope">
           <span>{{ scope.row.realName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('table.group')" align="center" width="210">
+      <el-table-column :label="$t('table.group')" align="center" width="240">
         <template slot-scope="scope">
-          <span>{{ scope.row.group }}</span>
+          <span class="link-type" @click="handleGroup(scope.row)">{{ groupName(scope.row.group) }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('table.date')" width="280" align="center">
+      <el-table-column :label="$t('table.status')" class-name="status-col" width="151">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | statusName }}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column :label="$t('table.actions')" align="center" width="300" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)"><svg-icon icon-class="edit" /></el-button>
+          <el-button v-if="scope.row.status===0" size="mini" type="success" @click="handleModifyStatus(scope.row,1)">{{ $t('table.open') }}
+          </el-button>
+          <el-button v-if="scope.row.status===1" size="mini" type="danger" @click="handleModifyStatus(scope.row,0)">{{ $t('table.delete') }}
+          </el-button>
+        </template>
+      </el-table-column>
+
+      <el-table-column :label="$t('table.date')" width="440" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.update_time }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('table.actions')" align="center" width="750" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)"><svg-icon icon-class="edit" /></el-button>
-          <el-button v-if="scope.row.status!='published'" size="mini" type="success" @click="handleModifyStatus(scope.row,'published')">{{ $t('table.publish') }}
-          </el-button>
-          <el-button v-if="scope.row.status!='draft'" size="mini" @click="handleModifyStatus(scope.row,'draft')">{{ $t('table.draft') }}
-          </el-button>
-          <el-button v-if="scope.row.status!='deleted'" size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button>
-        </template>
-      </el-table-column>
-
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit.size" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
 
-        <el-form-item :label="$t('table.realname')" prop="realname">
+        <el-form-item :label="$t('table.realname')" prop="name">
           <el-input v-model="temp.realName"/>
         </el-form-item>
 
         <el-form-item :label="$t('table.status')">
           <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item"/>
+            <el-option v-for="(item,key) in statusOptions" :key="key" :label="item" :value="key"/>
           </el-select>
         </el-form-item>
 
@@ -94,44 +90,41 @@
       </div>
     </el-dialog>
 
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogGroupVisible">
+
+      <div>
+        <el-checkbox-group v-model="checkboxGroup">
+          <el-checkbox-button v-for="(group,id) in groupMap" :label="id" :key="id">{{ group }}</el-checkbox-button>
+        </el-checkbox-group>
+      </div>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogGroupVisible = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="updateRow()">{{ $t('table.confirm') }}</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { fetchPv, createArticle, updateArticle } from '@/api/article'
-import { fetchList } from '@/api/user'
+import userApi from '@/api/system/user'
+import groupApi from '@/api/system/userGroup'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
-const calendarTypeOptions = [
-  { key: 'CN', display_name: 'China' },
-  { key: 'US', display_name: 'USA' },
-  { key: 'JP', display_name: 'Japan' },
-  { key: 'EU', display_name: 'Eurozone' }
-]
-
-// arr to obj ,such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
-
 export default {
-  name: 'ComplexTable',
-  components: { Pagination },
+  name: 'UserGroup',
   directives: { waves },
   filters: {
     statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
+      const statusMap = ['danger', 'success']
       return statusMap[status]
     },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
+    statusName(status) {
+      const statusName = ['stop', 'open']
+      return statusName[status]
     }
   },
   data() {
@@ -141,35 +134,40 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: '+id'
+        limit: {
+          page: 1,
+          size: 20
+        },
+        where: {
+          realName: undefined,
+          status: undefined
+        },
+        order: {
+          update_time: 'desc'
+        }
       },
-      importanceOptions: [1, 2, 3],
-      calendarTypeOptions,
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['open', 'stop'],
-      showReviewer: false,
+      statusOptions: ['stop', 'open'],
       temp: {
         id: undefined,
-        userName: '',
         realName: '',
-        group: ''
+        status: ''
       },
       dialogFormVisible: false,
+      components: { Pagination },
       dialogStatus: '',
       textMap: {
         update: 'Edit',
-        create: 'Create'
+        create: 'Create',
+        route: 'Route',
+        game: 'Game'
       },
-      dialogPvVisible: false,
-      pvData: [],
+      dialogGroupVisible: false,
+      groupMap: [],
+      groupList: [],
+      checkboxGroup: [],
+      saveRow: {},
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
+        realName: [{ required: true, message: 'realname is required', trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
       downloadLoading: false
@@ -177,60 +175,57 @@ export default {
   },
   created() {
     this.getList()
+    this.getGroupMap()
   },
   methods: {
+    show() {
+      console.log(this.checkboxGroup)
+    },
+    groupName(group) {
+      if (!group) {
+        return '无'
+      }
+      const groupArr = group.split(',')
+      const result = []
+      groupArr.forEach(element => {
+        result.push(this.groupMap[element])
+      })
+      return result.join(',')
+    },
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        console.log(response.data)
-        console.log(response.data.param)
-        this.list = response.data.items
+      userApi.fetchList(this.listQuery).then(response => {
         this.total = response.data.total
 
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        if (response.data.total === 1) {
+          this.list = [response.data.items]
+        } else {
+          this.list = response.data.items
+        }
+
+        this.listLoading = false
+      })
+    },
+    getGroupMap() {
+      groupApi.fetchMap().then((response) => {
+        this.groupMap = response.data
       })
     },
     handleFilter() {
-      this.listQuery.page = 1
+      this.listQuery.limit.page = 1
       this.getList()
     },
     handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
       row.status = status
-    },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '1111',
-        status: 'published',
-        type: ''
-      }
+      userApi.update(row).then((response) => {
+        this.$message({
+          message: response.msg,
+          type: 'success'
+        })
+        console.log(response)
+      })
     },
     handleCreate() {
-      // this.resetTemp()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -240,9 +235,10 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
+          delete this.temp.id
+          userApi.create(this.temp).then((response) => {
+            this.temp.id = response.data
+            this.temp.update_time = parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}')
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -257,7 +253,6 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -268,8 +263,8 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
+          userApi.update(tempData).then(() => {
+            // this.list.splice(this.list.indexOf(item => item.id === this.temp.id), 1, this.temp)
             for (const v of this.list) {
               if (v.id === this.temp.id) {
                 const index = this.list.indexOf(v)
@@ -288,21 +283,22 @@ export default {
         }
       })
     },
-    handleDelete(row) {
-      this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
+    updateRow() {
+      this.saveRow.group = this.checkboxGroup.join(',')
+      userApi.update(this.saveRow).then((response) => {
+        this.dialogGroupVisible = false
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
       })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
     },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
+    handleGroup(row) {
+      this.saveRow = row
+      this.checkboxGroup = row.group ? row.group.split(',') : []
+      this.dialogGroupVisible = true
     },
     handleDownload() {
       this.downloadLoading = true
