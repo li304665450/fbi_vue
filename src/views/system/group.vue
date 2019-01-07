@@ -145,7 +145,7 @@ import { asyncRouterMap } from '@/router'
 export default {
   name: 'UserGroup',
   directives: { waves },
-  components: { treeTable },
+  components: { treeTable, Pagination },
   filters: {
     statusFilter(status) {
       const statusMap = ['danger', 'success']
@@ -182,7 +182,6 @@ export default {
         status: ''
       },
       dialogFormVisible: false,
-      components: { Pagination },
       dialogStatus: '',
       textMap: {
         update: 'Edit',

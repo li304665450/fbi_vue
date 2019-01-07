@@ -116,6 +116,7 @@ import Pagination from '@/components/Pagination' // Secondary package based on e
 
 export default {
   name: 'UserGroup',
+  components: { Pagination },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -153,7 +154,6 @@ export default {
         status: ''
       },
       dialogFormVisible: false,
-      components: { Pagination },
       dialogStatus: '',
       textMap: {
         update: 'Edit',

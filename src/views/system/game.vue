@@ -260,12 +260,6 @@ export default {
           tempData.status = this.temp.status
           tempData.pid = this.temp.pid
           gameApi.update(tempData).then(() => {
-            // this.$router.push({
-            //   path: '/system/game',
-            //   query: {
-            //     t: +new Date()
-            //   }
-            // })
             this.getList()
             this.dialogFormVisible = false
             this.$notify({
