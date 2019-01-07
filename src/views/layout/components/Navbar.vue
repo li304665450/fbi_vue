@@ -37,6 +37,23 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <div class="right-menu">
+
+      <el-button class="right-menu-item" @click="show">查看</el-button>
+
+      <div class="block right-menu-item">
+        <el-date-picker
+          v-model="$store.state.user.time"
+          :picker-options="pickerOptions2"
+          type="datetimerange"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          range-separator="-"
+          align="right"
+        />
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -60,11 +77,43 @@ export default {
     LangSelect,
     ThemePicker
   },
+  data() {
+    return {
+      pickerOptions2: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      value4: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+      value5: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'name',
-      'avatar',
       'device'
     ])
   },
@@ -76,6 +125,9 @@ export default {
       this.$store.dispatch('LogOut').then(() => {
         location.reload()// In order to re-instantiate the vue-router object to avoid bugs
       })
+    },
+    show() {
+      console.log(this.$store.state.user.time)
     }
   }
 }
