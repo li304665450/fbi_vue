@@ -40,7 +40,14 @@
 
     <div class="right-menu">
 
-      <el-button class="right-menu-item" @click="show">查看</el-button>
+      <div class="block right-menu-item">
+        <el-cascader
+          v-model="$store.state.user.game"
+          :options="$store.state.user.gameTree"
+          filterable
+          @change="setDefaultGame"
+        />
+      </div>
 
       <div class="block right-menu-item">
         <el-date-picker
@@ -66,6 +73,7 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
+import userApi from '@/api/system/user'
 
 export default {
   components: {
@@ -105,9 +113,7 @@ export default {
             picker.$emit('pick', [start, end])
           }
         }]
-      },
-      value4: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
-      value5: ''
+      }
     }
   },
   computed: {
@@ -126,8 +132,20 @@ export default {
         location.reload()// In order to re-instantiate the vue-router object to avoid bugs
       })
     },
-    show() {
-      console.log(this.$store.state.user.time)
+    setDefaultGame() {
+      const data = {}
+      data.id = this.$store.state.user.code
+      data.default_game = this.$store.state.user.game
+      userApi.update(data).then(response => {
+        if (response.status === 1) {
+          this.$notify({
+            title: '成功',
+            message: '游戏修改成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
     }
   }
 }

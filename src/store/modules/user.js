@@ -10,6 +10,8 @@ const user = {
     name: '',
     roles: [],
     time: [],
+    game: [],
+    gameTree: [],
     setting: {
       articlePlatform: []
     }
@@ -33,6 +35,15 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_TIME: (state, time) => {
+      state.time = time
+    },
+    SET_GAME: (state, game) => {
+      state.game = game
+    },
+    SET_GAME_TREE: (state, gameTree) => {
+      state.gameTree = gameTree
     }
   },
 
@@ -67,7 +78,21 @@ const user = {
             reject('getInfo: roles must be a non-null array !')
           }
 
+          commit('SET_GAME', data.default_game)
+          commit('SET_GAME_TREE', data.access_game)
+
+          const end = new Date()
+          const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000)
+          commit(
+            'SET_TIME',
+            [
+              start.getFullYear() + '-' + start.getMonth() + 1 + '-' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + ':' + start.getSeconds(),
+              end.getFullYear() + '-' + end.getMonth() + 1 + '-' + end.getDate() + ' ' + end.getHours() + ':' + end.getMinutes() + ':' + end.getSeconds()
+            ]
+          )
+
           commit('SET_NAME', data.name)
+          commit('SET_CODE', data.user_id)
           resolve(response)
         }).catch(error => {
           reject(error)
