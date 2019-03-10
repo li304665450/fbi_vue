@@ -66,7 +66,8 @@ export default {
     externalLink: '外链',
     userList: '用户列表',
     userGroup: '权限组管理',
-    gameList: '游戏列表'
+    gameList: '游戏列表',
+    userClustering: '用户分群'
   },
   navbar: {
     logOut: '退出登录',
@@ -130,13 +131,25 @@ export default {
     draft: '草稿',
     delete: '删除',
     open: '启用',
+    stop: '禁用',
     cancel: '取 消',
     confirm: '确 定',
     group: '权限组',
     realname: '姓名',
     name: '名称',
     cloud: '业务群',
-    code: '编码'
+    code: '编码',
+    avatar: '头像',
+    email: '邮箱',
+    department: '部门',
+    authority: '权限',
+    creater: '创建人',
+    create_time: '创建时间',
+    updater: '修改人',
+    update_time: '修改时间',
+    compute_type: '计算类型',
+    user_num: '用户人数',
+    user_type: '用户类型'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

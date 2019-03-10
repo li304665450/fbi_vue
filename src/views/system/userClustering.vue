@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <div class="filter-container">
-      <el-input :placeholder="$t('table.realname')" v-model="listQuery.real_name.like" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+      <el-input :placeholder="$t('table.realname')" v-model="listQuery.name.like" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
       <el-select v-model="listQuery.status" :placeholder="$t('table.status')" clearable style="width: 90px" class="filter-item">
         <el-option v-for="(item,key) in statusOptions" :key="key" :label="item" :value="key"/>
       </el-select>
@@ -25,55 +25,46 @@
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('login.username')" align="center">
+      <el-table-column :label="$t('table.name')" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.user_name }}</span>
+          <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('table.realname')" align="center">
+      <el-table-column :label="$t('table.compute_type')" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.real_name }}</span>
+          <span>{{ scope.row.compute_type | computeType }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('table.email')" align="center">
+      <el-table-column :label="$t('table.user_num')" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.email }}</span>
+          <span>{{ scope.row.last_num }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="$t('table.department')" align="center">
+      <el-table-column :label="$t('table.update_time')" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.department }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column :label="$t('table.authority')" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.authority }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column :label="$t('table.status')" class-name="status-col">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | statusName }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column :label="$t('table.actions')" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)"><svg-icon icon-class="edit" /></el-button>
-          <el-button v-if="scope.row.status===0" size="mini" type="success" @click="handleModifyStatus(scope.row,1)">{{ $t('table.open') }}
-          </el-button>
-          <el-button v-if="scope.row.status===1" size="mini" type="danger" @click="handleModifyStatus(scope.row,0)">{{ $t('table.stop') }}
-          </el-button>
+          <span>{{ scope.row.update_time }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :label="$t('table.create_time')" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.create_time }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column :label="$t('table.status')" class-name="status-col">
+        <template slot-scope="scope">
+          <el-switch v-if="scope.row.status !== undefined" v-model="scope.row.status" active-value="1" inactive-value="0" @change="handleModifyStatus(scope.row)" />
+        </template>
+      </el-table-column>
+
+      <el-table-column :label="$t('table.actions')" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)"><svg-icon icon-class="edit" /></el-button>
+          <el-button type="primary" size="" @click="click(scope.row)">log</el-button>
         </template>
       </el-table-column>
 
@@ -84,24 +75,14 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
 
-        <el-form-item :label="$t('login.username')" prop="user_name">
-          <el-input v-model="temp.user_name"/>
+        <el-form-item :label="$t('table.name')" prop="name">
+          <el-input v-model="temp.name"/>
         </el-form-item>
 
-        <el-form-item v-if="dialogStatus==='create'" :label="$t('login.password')" prop="password">
-          <el-input v-model="temp.password"/>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.realname')" prop="real_name">
-          <el-input v-model="temp.real_name"/>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.email')" prop="email">
-          <el-input v-model="temp.email"/>
-        </el-form-item>
-
-        <el-form-item :label="$t('table.department')">
-          <el-input v-model="temp.department"/>
+        <el-form-item :label="$t('table.compute_type')">
+          <el-select v-model="temp.compute_type" class="filter-item" placeholder="Please select">
+            <el-option v-for="(item,key) in computeType" :key="key" :label="item" :value="key"/>
+          </el-select>
         </el-form-item>
 
         <el-form-item :label="$t('table.status')">
@@ -121,7 +102,7 @@
 </template>
 
 <script>
-import userApi from '@/api/system/user'
+import userClusteringApi from '@/api/ims/userClustering'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -130,13 +111,9 @@ export default {
   components: { Pagination },
   directives: { waves },
   filters: {
-    statusFilter(status) {
-      const statusMap = ['danger', 'success']
-      return statusMap[status]
-    },
-    statusName(status) {
-      const statusName = ['stop', 'open']
-      return statusName[status]
+    computeType(type) {
+      const typeName = ['临时查询', '每日任务']
+      return typeName[type]
     }
   },
   data() {
@@ -145,8 +122,9 @@ export default {
       list: [],
       total: 0,
       listLoading: true,
+      value5: true,
       listQuery: {
-        real_name: {
+        name: {
           like: undefined
         },
         status: undefined,
@@ -158,15 +136,13 @@ export default {
           create_time: 'desc'
         }
       },
-      statusOptions: ['stop', 'open'],
+      statusOptions: { '0': '关', '1': '开' },
+      computeType: ['临时数据', '每日任务'],
       temp: {
         id: undefined,
-        user_name: '',
-        password: '',
-        real_name: '',
-        email: '',
-        department: '',
-        status: 1
+        name: '',
+        compute_type: 0,
+        status: '1'
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -175,10 +151,7 @@ export default {
         create: 'Create'
       },
       rules: {
-        user_name: [{ required: true, message: 'user_name is required', trigger: 'blur' }],
-        password: [{ required: true, message: 'password is required', trigger: 'blur' }],
-        real_name: [{ required: true, message: 'realname is required', trigger: 'change' }],
-        email: [{ required: true, message: 'tiemailtle is required', trigger: 'change' }]
+        name: [{ required: true, message: 'name is required', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -189,7 +162,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      userApi.fetchList(this.listQuery).then(response => {
+      userClusteringApi.fetchList(this.listQuery).then(response => {
         this.total = response.data.total
         this.list = response.data.items
         this.listLoading = false
@@ -199,9 +172,9 @@ export default {
       this.listQuery._limit.page = 1
       this.getList()
     },
-    handleModifyStatus(row, status) {
-      row.status = status
-      userApi.update(row).then((response) => {
+    handleModifyStatus(row) {
+      console.log(row)
+      userClusteringApi.update(row).then((response) => {
         this.$message({
           message: response.msg,
           type: 'success'
@@ -219,9 +192,10 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           delete this.temp.id
-          userApi.create(this.temp).then((response) => {
+          userClusteringApi.create(this.temp).then((response) => {
             this.temp.id = response.data
-            this.temp.update_time = parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}')
+            this.temp.create_time = parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}')
+            console.log(this.temp)
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -247,7 +221,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          userApi.update(tempData).then(() => {
+          userClusteringApi.update(tempData).then(() => {
             // this.list.splice(this.list.indexOf(item => item.id === this.temp.id), 1, this.temp)
             for (const v of this.list) {
               if (v.id === this.temp.id) {
@@ -265,6 +239,21 @@ export default {
             })
           })
         }
+      })
+    },
+    click(row) {
+      userClusteringApi.getLog(row).then(response => {
+        console.log(response)
+        let message = ''
+        response.data.forEach(element => {
+          message += `<p>${element['create_time']}: ${element['num']}</p>`
+        })
+        this.$notify({
+          title: row.name + ' Log',
+          dangerouslyUseHTMLString: true,
+          message: message,
+          type: 'success'
+        })
       })
     }
   }

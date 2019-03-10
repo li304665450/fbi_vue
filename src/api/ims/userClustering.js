@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const Url = '/system/user'
+const Url = '/ims/userClustering'
 
 export default {
   fetchList: (query) => {
@@ -33,6 +33,13 @@ export default {
       url: Url + '/update',
       method: 'post',
       data: param
+    })
+  },
+  getLog: (data) => {
+    return request({
+      url: Url + '/getLog',
+      method: 'get',
+      params: data
     })
   }
 }

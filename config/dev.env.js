@@ -1,5 +1,5 @@
 module.exports = {
   NODE_ENV: '"development"',
   ENV_CONFIG: '"dev"',
-  BASE_API: '"http://www.frame.com"'
+  BASE_API: '"http://bi-api.com"'
 }

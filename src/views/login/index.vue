@@ -87,7 +87,7 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        username: 'marsli',
         password: '123456'
       },
       loginRules: {

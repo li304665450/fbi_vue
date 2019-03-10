@@ -3,9 +3,10 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
   state: {
-    user: '',
+    uid: '',
+    platform: 3,
     status: '',
-    code: '',
+    avatar: '',
     token: getToken(),
     name: '',
     roles: [],
@@ -18,8 +19,8 @@ const user = {
   },
 
   mutations: {
-    SET_CODE: (state, code) => {
-      state.code = code
+    SET_UID: (state, uid) => {
+      state.uid = uid
     },
     SET_TOKEN: (state, token) => {
       state.token = token
@@ -79,7 +80,7 @@ const user = {
           }
 
           commit('SET_GAME', data.default_game)
-          commit('SET_GAME_TREE', data.access_game)
+          commit('SET_GAME_TREE', data.cloud_game)
 
           const end = new Date()
           const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000)
@@ -91,8 +92,8 @@ const user = {
             ]
           )
 
-          commit('SET_NAME', data.name)
-          commit('SET_CODE', data.user_id)
+          commit('SET_NAME', data.real_name)
+          commit('SET_UID', data.id)
           resolve(response)
         }).catch(error => {
           reject(error)

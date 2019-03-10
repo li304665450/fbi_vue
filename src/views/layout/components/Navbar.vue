@@ -42,8 +42,8 @@
 
       <div class="block right-menu-item">
         <el-cascader
-          v-model="$store.state.user.game"
-          :options="$store.state.user.gameTree"
+          v-model="$store.state.user.game[$store.state.user.platform]"
+          :options="$store.state.user.gameTree[$store.state.user.platform]"
           filterable
           @change="setDefaultGame"
         />
@@ -134,7 +134,7 @@ export default {
     },
     setDefaultGame() {
       const data = {}
-      data.id = this.$store.state.user.code
+      data.id = this.$store.state.user.uid
       data.default_game = this.$store.state.user.game
       userApi.update(data).then(response => {
         if (response.status === 1) {

@@ -191,6 +191,7 @@ export default {
           return gameList
         }
         this.list = formatGame(gameTree)
+        console.log(this.list)
       })
     },
     handleFilter() {

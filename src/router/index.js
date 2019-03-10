@@ -133,10 +133,10 @@ export const asyncRouterMap = [
         meta: { title: 'userGroup' }
       },
       {
-        path: 'game',
-        component: () => import('@/views/system/game'),
-        name: 'game',
-        meta: { title: 'gameList' }
+        path: 'userClustering',
+        component: () => import('@/views/system/userClustering'),
+        name: 'userClustering',
+        meta: { title: 'userClustering' }
       }
     ]
   },

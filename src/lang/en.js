@@ -66,7 +66,8 @@ export default {
     externalLink: 'External Link',
     userList: 'User List',
     userGroup: 'User Group',
-    gameList: 'Game List'
+    gameList: 'Game List',
+    userClustering: 'UserClustering'
   },
   navbar: {
     logOut: 'Log Out',
@@ -130,13 +131,25 @@ export default {
     draft: 'Draft',
     delete: 'Delete',
     open: 'Open',
+    stop: 'Stop',
     cancel: 'Cancel',
     confirm: 'Confirm',
     group: 'Group',
     realname: 'RealName',
     name: 'Name',
     cloud: 'Cloud',
-    code: 'Code'
+    code: 'Code',
+    avatar: 'Avatar',
+    email: 'Email',
+    department: 'Department',
+    authority: 'Authority',
+    creater: 'Creater',
+    create_time: 'create_time',
+    updater: 'Updater',
+    update_time: 'update_time',
+    compute_type: 'computeType',
+    user_num: 'userNum',
+    user_type: 'userType'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
